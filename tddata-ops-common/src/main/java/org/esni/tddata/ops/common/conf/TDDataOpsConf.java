@@ -156,7 +156,9 @@ public class TDDataOpsConf {
             path = homePath + File.separator + "config" + File.separator + "tddata_ops.properties";
         }
 
-        properties.store(new FileOutputStream(new File(path)), "");
+        FileOutputStream outStream = new FileOutputStream(new File(path));
+        properties.store(outStream, "");
+        outStream.close();
 
     }
 
