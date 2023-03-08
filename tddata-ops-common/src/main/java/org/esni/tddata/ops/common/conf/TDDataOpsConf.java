@@ -162,4 +162,11 @@ public class TDDataOpsConf {
 
     }
 
+    public static void main(String[] args) throws IOException {
+
+        TDDataOpsConf conf = TDDataOpsConf.getOrCreateTDDataOpsConfWithTestMode();
+        System.out.println(conf.getString("aaaaqqqqghjiuhgilyisiopjiodjsiowdjssjiosjiou888888888888888888888888888888888yglghiluyqqqq", "default"));
+
+    }
+
 }
