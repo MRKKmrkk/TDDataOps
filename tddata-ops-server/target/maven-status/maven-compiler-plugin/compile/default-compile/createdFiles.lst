@@ -1,0 +1,3 @@
+org\esni\tddata\ops\server\controller\ConfigCon.class
+org\esni\tddata\ops\server\ServerApplication.class
+org\esni\tddata\ops\server\config\ReadConfigFile.class
