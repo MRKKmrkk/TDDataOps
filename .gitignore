@@ -3,3 +3,5 @@
 test
 target/
 derby.log
+*/target
+
