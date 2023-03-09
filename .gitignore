@@ -1,5 +1,7 @@
 .idea
 *.iml
 test
-*/target
 target/
+derby.log
+*/target
+
