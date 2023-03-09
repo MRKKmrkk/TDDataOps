@@ -20,6 +20,25 @@
     </properties>
 
     <dependencies>
+<<<<<<< HEAD
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.21</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+    </dependencies>
+=======
 
         <dependency>
             <groupId>org.apache.spark</groupId>
@@ -47,4 +66,5 @@
 
     </dependencies>
 
+>>>>>>> c67e7791e77b5f05b3319a6f8cb43ac0021495d3
 </project>
