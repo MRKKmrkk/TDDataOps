@@ -45,7 +45,7 @@ public class SQLCommandUtil {
     public static boolean isSafeSQLCommand(String sql, String workspace, Role...notAllowRoles) {
 
         if (sql.trim().isEmpty()) {
-                throw new SQLCheckError("argument 'sql' can not be empty on method isSafeSQLCommand");
+            throw new SQLCheckError("argument 'sql' can not be empty on method isSafeSQLCommand");
         }
 
         if (workspace.trim().isEmpty()) {
