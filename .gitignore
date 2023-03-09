@@ -1,4 +1,4 @@
 .idea
 *.iml
 test
-*/target
+target/
