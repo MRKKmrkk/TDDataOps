@@ -1,4 +1,4 @@
-package org.esni.tddata.ops.common.conf;
+package org.esni.tddata.ops.common.log;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;

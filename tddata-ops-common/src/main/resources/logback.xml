@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <conversionRule conversionWord="customcolor" converterClass="org.esni.tddata.ops.common.conf.LogbackColorful"/>
-    <define name="filepath" class="org.esni.tddata.ops.common.conf.LogConfig"/>
+    <conversionRule conversionWord="customcolor" converterClass="org.esni.tddata.ops.common.log.LogbackColorful"/>
+    <define name="filepath" class="org.esni.tddata.ops.common.log.LogConfig"/>
 
 
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">

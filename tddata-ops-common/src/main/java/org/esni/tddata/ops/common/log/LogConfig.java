@@ -1,6 +1,7 @@
-package org.esni.tddata.ops.common.conf;
+package org.esni.tddata.ops.common.log;
 
 import ch.qos.logback.core.PropertyDefinerBase;
+import org.esni.tddata.ops.common.conf.TDDataOpsConf;
 
 import java.io.File;
 import java.io.IOException;
