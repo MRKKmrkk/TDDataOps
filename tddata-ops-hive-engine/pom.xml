@@ -16,4 +16,12 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.esni</groupId>
+            <artifactId>tddata-ops-common</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+    </dependencies>
+
 </project>
