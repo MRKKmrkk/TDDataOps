@@ -1,8 +1,11 @@
 package org.esni.tddata.ops.hive.engine.model
 
-class ModelFormat extends Enumeration {
+class ModelFormat(val value: String) {}
 
-  val TEXT: Value = Value("text")
-  val PARQUET: Value = Value("parquet")
+object ModelFormat {
+
+  def apply(value: String): ModelFormat = new ModelFormat(value)
+
+  val TEXT: ModelFormat = ModelFormat("text")
 
 }

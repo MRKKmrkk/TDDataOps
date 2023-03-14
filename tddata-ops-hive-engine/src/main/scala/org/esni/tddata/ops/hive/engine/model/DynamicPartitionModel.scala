@@ -11,6 +11,6 @@ class DynamicPartitionModel(
                              storagePath: String,
                              format: ModelFormat,
                              bucketCols: Array[String]
-                           ) extends Model(workspace, layerName, modelName, schema, storagePath, format, bucketCols) {
+                           ) extends HiveModel(workspace, layerName, modelName, schema, storagePath, format, bucketCols) {
 
 }
