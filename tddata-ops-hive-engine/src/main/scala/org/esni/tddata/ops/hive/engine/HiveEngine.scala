@@ -93,6 +93,8 @@ class HiveEngine(private val session: SparkSession) {
 
   }
 
+  def close(): Unit = session.close()
+
 
 }
 
