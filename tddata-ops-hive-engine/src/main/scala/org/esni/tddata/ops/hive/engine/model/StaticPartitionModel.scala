@@ -10,7 +10,8 @@ class StaticPartitionModel(
                             schema: StructType,
                             storagePath: String,
                             format: ModelFormat,
-                            bucketCols: Array[String]
-                          ) extends HiveModel(workspace, layerName, modelName, schema, storagePath, format, bucketCols) {
+                            bucketCols: Array[String],
+                            bucketNumber: Int
+                          ) extends HiveModel(workspace, layerName, modelName, schema, storagePath, format, bucketCols, bucketNumber) {
 
 }

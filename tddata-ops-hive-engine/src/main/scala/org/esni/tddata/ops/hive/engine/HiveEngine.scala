@@ -21,6 +21,8 @@ class HiveEngine(private val session: SparkSession) {
       SparkSession
         .builder()
         .config(conf)
+        // todo: 加这个参数才能跑，我也不知道怎么办
+        .config("dfs.client.use.datanode.hostname", "true")
         .enableHiveSupport()
         .getOrCreate()
 
@@ -50,17 +52,22 @@ class HiveEngine(private val session: SparkSession) {
       .createDataFrame(session.sparkContext.emptyRDD[Row], model.schema)
       .write
       .mode(SaveMode.ErrorIfExists)
-      .format(model.format.value)
+//      .option("fileFormat", model.format.value)
       .option("path", model.storagePath)
+      .format("hive")
 
     // 分桶
     if (model.isBucketTable) {
 
       if (model.bucketCols.length > 1) {
-        writer.bucketBy(model.bucketNumber, model.bucketCols(0))
-      } else {
         writer.bucketBy(model.bucketNumber, model.bucketCols(0), model.bucketCols.slice(1, model.bucketCols.length): _*)
+      } else {
+        writer.bucketBy(model.bucketNumber, model.bucketCols(0))
       }
+
+//      // test
+      session.sql("set hive.enforce.bucketing = false")
+      session.sql("set hive.enforce.sorting = false")
 
     }
 
@@ -71,7 +78,7 @@ class HiveEngine(private val session: SparkSession) {
   /**
    * 创建不分区数据模型
    */
-  def createModel(model: HiveModel): Unit = getDataWriter(model).saveAsTable(f"${model.layerName}.${model.modelName}")
+  def createModel(model: HiveModel): Unit = getDataWriter(model).saveAsTable(f"${model.workspace}.${model.layerName}_${model.modelName}")
 
   /**
    * 创建动态数据分区模型
@@ -82,7 +89,7 @@ class HiveEngine(private val session: SparkSession) {
 
     getDataWriter(model)
       .partitionBy(model.partitionCols: _*)
-      .saveAsTable(f"${model.layerName}.${model.modelName}")
+      .saveAsTable(f"${model.workspace}.${model.layerName}_${model.modelName}")
 
   }
 

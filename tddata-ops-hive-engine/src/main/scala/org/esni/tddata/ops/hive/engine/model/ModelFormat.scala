@@ -6,6 +6,7 @@ object ModelFormat {
 
   def apply(value: String): ModelFormat = new ModelFormat(value)
 
-  val TEXT: ModelFormat = ModelFormat("text")
+  val TEXT: ModelFormat = ModelFormat("textfile")
+  val PARQUET: ModelFormat = ModelFormat("parquet")
 
 }
