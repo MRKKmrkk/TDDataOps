@@ -78,5 +78,4 @@ object HiveEngine {
 
   def apply(hiveMetastoreUri: String, scratchDir: String, master: String): HiveEngine = new HiveEngine(hiveMetastoreUri, scratchDir, master)
 
-
 }
