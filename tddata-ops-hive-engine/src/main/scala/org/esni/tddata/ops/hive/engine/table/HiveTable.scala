@@ -1,78 +1,78 @@
 package org.esni.tddata.ops.hive.engine.table
 
 import org.apache.spark.sql.types.StructType
-import org.esni.tddata.ops.hive.engine.model.ModelFormat
+import org.esni.tddata.ops.hive.engine.exception.{HDFSURIError, PartitionColumnsIsEmptyError}
 
-class HiveTable private (
+class HiveTable  (
                  var workspace: String,
                  var layerName: String,
                  var modelName: String,
                  var schema: StructType,
-                 var format: ModelFormat,
+                 var format: FileFormat,
                  var path: String,
                  var isExternalTable: Boolean,
                  var partitionColumns: Array[String],
                  var isPartitionTable: Boolean
                ) {
 
-  class HiveTableBuilder(
-                          var workspace: String,
-                          var layerName: String,
-                          var modelName: String,
-                          var schema: StructType,
-                          var format: ModelFormat
-                        ) {
+}
 
-    var path: String = _
-    var isExternalTable: Boolean = false
-    var partitionColumns: Array[String] = _
-    var isPartitionTable: Boolean = false
+class HiveTableBuilder(
+                        private var workspace: String,
+                        private var layerName: String,
+                        private var modelName: String,
+                        private var schema: StructType,
+                        private var format: FileFormat
+                      ) {
 
-    def externalTable(path: String): HiveTableBuilder = {
+  private var path: String = _
+  private var isExternalTable: Boolean = false
+  private var partitionColumns: Array[String] = _
+  private var isPartitionTable: Boolean = false
 
-      this.path = path
-      this.isExternalTable = true
+  def externalTable(path: String): HiveTableBuilder = {
 
-      this
+    if (!path.startsWith("hdfs://")) throw HDFSURIError(f"uri must start with 'hdfs://' , but got '$path'")
 
-    }
+    this.path = path
+    this.isExternalTable = true
 
-    def partition(column: String): HiveTableBuilder = {
-
-      this.partitionColumns = Array(column)
-      this.isPartitionTable = true
-
-      this
-
-    }
-
-    def partition(columns: Array[String]): HiveTableBuilder = {
-
-      this.partitionColumns = columns
-      this.isPartitionTable = true
-
-      this
-
-    }
-
-    def build(): HiveTable = {
-
-      HiveTable(workspace, layerName, modelName, schema, format, path, isExternalTable, partitionColumns, isPartitionTable)
-
-    }
+    this
 
   }
 
-  object HiveTableBuilder {
+  def partition(column: String*): HiveTableBuilder = {
 
-    def apply(workspace: String, layerName: String, modelName: String, schema: StructType, format: ModelFormat): HiveTableBuilder = new HiveTableBuilder(workspace, layerName, modelName, schema, format)
+    this.partitionColumns = column.toArray
+    this.isPartitionTable = true
+
+    this
+
+  }
+
+  def partition(columns: Array[String]): HiveTableBuilder = {
+
+    if (columns.isEmpty) throw PartitionColumnsIsEmptyError("partition columns can not be empty")
+
+    this.partitionColumns = columns
+    this.isPartitionTable = true
+
+    this
+
+  }
+
+  def build(): HiveTable = {
+
+    new HiveTable(workspace, layerName, modelName, schema, format, path, isExternalTable, partitionColumns, isPartitionTable)
 
   }
 
 }
 
-object HiveTable {
+object HiveTableBuilder {
 
-  def apply(workspace: String, layerName: String, modelName: String, schema: StructType, format: ModelFormat, path: String, isExternalTable: Boolean, partitionColumns: Array[String], isPartitionTable: Boolean): HiveTable = new HiveTable(workspace, layerName, modelName, schema, format, path, isExternalTable, partitionColumns, isPartitionTable)
+  def apply(workspace: String, layerName: String, modelName: String, schema: StructType, format: FileFormat): HiveTableBuilder = new HiveTableBuilder(workspace, layerName, modelName, schema, format)
 
 }
+
+

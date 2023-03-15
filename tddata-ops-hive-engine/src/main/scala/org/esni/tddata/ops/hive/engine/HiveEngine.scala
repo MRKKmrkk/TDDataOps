@@ -1,8 +1,8 @@
 package org.esni.tddata.ops.hive.engine
 
 import org.apache.spark.SparkConf
-import org.apache.spark.sql.{DataFrameWriter, Row, SaveMode, SparkSession}
-import org.esni.tddata.ops.hive.engine.model.{DynamicPartitionModel, HiveModel, Model, StaticPartitionModel}
+import org.apache.spark.sql.{Row, SaveMode, SparkSession}
+import org.esni.tddata.ops.hive.engine.table.HiveTable
 
 class HiveEngine(private val session: SparkSession) {
 
@@ -46,62 +46,30 @@ class HiveEngine(private val session: SparkSession) {
 
   }
 
-  private def getDataWriter(model: HiveModel): DataFrameWriter[Row] = {
+  def createHiveTable(table: HiveTable, saveMode: SaveMode = SaveMode.ErrorIfExists): Unit = {
 
     val writer = session
-      .createDataFrame(session.sparkContext.emptyRDD[Row], model.schema)
+      .createDataFrame(session.sparkContext.emptyRDD[Row], table.schema)
       .write
-      .mode(SaveMode.ErrorIfExists)
-//      .option("fileFormat", model.format.value)
-      .option("path", model.storagePath)
-      .format("hive")
+      .mode(saveMode)
+      .option("fileFormat", table.format.value)
 
-    // 分桶
-    if (model.isBucketTable) {
-
-      if (model.bucketCols.length > 1) {
-        writer.bucketBy(model.bucketNumber, model.bucketCols(0), model.bucketCols.slice(1, model.bucketCols.length): _*)
-      } else {
-        writer.bucketBy(model.bucketNumber, model.bucketCols(0))
-      }
-
-//      // test
-      session.sql("set hive.enforce.bucketing = false")
-      session.sql("set hive.enforce.sorting = false")
-
+    // 如果是外部表则指定文件位置
+    if (table.isExternalTable) {
+      writer.option("path", table.path)
     }
 
-    writer
+    // 如果是分区表则启动分区并设置分区字段
+    if (table.isPartitionTable) {
+      if (!isEnableDynamicPartition) enableDynamicPartition()
+      writer.partitionBy(table.partitionColumns: _*)
+    }
 
-  }
-
-  /**
-   * 创建不分区数据模型
-   */
-  def createModel(model: HiveModel): Unit = getDataWriter(model).saveAsTable(f"${model.workspace}.${model.layerName}_${model.modelName}")
-
-  /**
-   * 创建动态数据分区模型
-   */
-  def createModelOnDynamicPartition(model: DynamicPartitionModel): Unit = {
-
-    if (!isEnableDynamicPartition) enableDynamicPartition()
-
-    getDataWriter(model)
-      .partitionBy(model.partitionCols: _*)
-      .saveAsTable(f"${model.workspace}.${model.layerName}_${model.modelName}")
-
-  }
-
-  /**
-   * 创建静态数据分区模型
-   */
-  def createModelOnStaticPartition(model: StaticPartitionModel): Unit = {
+    writer.saveAsTable(f"${table.workspace}.${table.layerName}_${table.modelName}")
 
   }
 
   def close(): Unit = session.close()
-
 
 }
 
