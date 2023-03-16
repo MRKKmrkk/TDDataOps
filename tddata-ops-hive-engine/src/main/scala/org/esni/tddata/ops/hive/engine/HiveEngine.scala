@@ -37,8 +37,6 @@ class HiveEngine(private val session: SparkSession) {
 
     if (isEnableDynamicPartition) return
 
-    // 启动动态分区
-    // todo: 待测试
     session.sql("set hive.exec.dynamic.partition = true")
     session.sql("set hive.exec.dynamic.partition.mode = nonstrict")
 
