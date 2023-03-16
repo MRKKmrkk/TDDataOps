@@ -4,4 +4,7 @@ test
 target/
 derby.log
 */target
+target/
+*.properties
+*.log
 
