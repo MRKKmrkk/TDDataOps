@@ -1,28 +1,31 @@
 package org.esni.tddata.ops.hive.engine
 
 import org.apache.spark.SparkConf
-import org.apache.spark.sql.{Row, SaveMode, SparkSession}
+import org.apache.spark.sql.{DataFrame, Row, SaveMode, SparkSession}
+import org.esni.tddata.ops.hive.engine.exception.HQLError
 import org.esni.tddata.ops.hive.engine.table.HiveTable
+
 
 class HiveEngine(private val session: SparkSession) {
 
   private var isEnableDynamicPartition: Boolean = false
 
-  def this(hiveMetastoreUri: String, scratchDir: String, master: String) = {
+  def this(hiveMetastoreUri: String, scratchDir: String, master: String = "") = {
 
     this{
 
       val conf: SparkConf = new SparkConf()
-        .setMaster(master)
         .setAppName("HiveEngine")
         .set("hive.metastore.uris", hiveMetastoreUri)
         .set("hive.exec.scratchdir", scratchDir)
+        // todo: 加这个参数才能跑，我也不知道怎么办
+        .set("dfs.client.use.datanode.hostname", "true")
+
+      if (master != null && master.nonEmpty) conf.setMaster(master)
 
       SparkSession
         .builder()
         .config(conf)
-        // todo: 加这个参数才能跑，我也不知道怎么办
-        .config("dfs.client.use.datanode.hostname", "true")
         .enableHiveSupport()
         .getOrCreate()
 
@@ -64,6 +67,19 @@ class HiveEngine(private val session: SparkSession) {
     }
 
     writer.saveAsTable(f"${table.workspace}.${table.layerName}_${table.modelName}")
+
+  }
+
+  // todo: 待实现权限检查
+  def executeHQLOnWorkspace(hql: String): DataFrame = {
+
+    if (hql == null || hql.isEmpty) return session.emptyDataFrame
+
+    try {
+      session.sql(hql)
+    } catch {
+      case e: Exception => throw HQLError(e.toString)
+    }
 
   }
 

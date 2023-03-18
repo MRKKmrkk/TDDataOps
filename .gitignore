@@ -7,4 +7,4 @@ derby.log
 target/
 *.properties
 *.log
-
+*.xml

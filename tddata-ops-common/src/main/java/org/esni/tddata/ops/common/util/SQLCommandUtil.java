@@ -2,6 +2,9 @@ package org.esni.tddata.ops.common.util;
 
 import org.esni.tddata.ops.common.exception.SQLCheckError;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,6 +21,19 @@ public class SQLCommandUtil {
         DELETE("delete"),
         GRANT("grant"),
         INSERT("insert");
+
+        private static final ArrayList<Role> ROLES = new ArrayList<Role>();
+
+        static {
+            ROLES.add(Role.CREATE);
+            ROLES.add(Role.SELECT);
+            ROLES.add(Role.USE);
+            ROLES.add(Role.ALTER);
+            ROLES.add(Role.DROP);
+            ROLES.add(Role.DELETE);
+            ROLES.add(Role.GRANT);
+            ROLES.add(Role.INSERT);
+        }
 
         private final String role;
 
@@ -72,6 +88,22 @@ public class SQLCommandUtil {
         }
 
         return true;
+
+    }
+
+    public static ArrayList<Role> getRolesExcepted(Role... roles) {
+
+        if (roles.length == 0) {
+            return Role.ROLES;
+        }
+
+        ArrayList<Role> expectRoles = new ArrayList<>();
+        List<Role> exceptedRoles = Arrays.asList(roles);
+        for (Role role : Role.ROLES) {
+            if (!exceptedRoles.contains(role)) expectRoles.add(role);
+        }
+
+        return expectRoles;
 
     }
 
