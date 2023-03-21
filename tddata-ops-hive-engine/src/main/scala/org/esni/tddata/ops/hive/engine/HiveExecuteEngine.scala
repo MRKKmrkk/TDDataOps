@@ -1,12 +1,15 @@
 package org.esni.tddata.ops.hive.engine
 
 import org.apache.spark.launcher.{SparkAppHandle, SparkLauncher}
+import org.slf4j.LoggerFactory
 
 import java.util.concurrent.CountDownLatch
 
 object HiveExecuteEngine {
 
   def main(args: Array[String]): Unit = {
+
+    val logger = LoggerFactory.getLogger(HiveExecuteEngine.getClass)
 
     val hiveMetastoreUri ="thrift://Esni-Master:9083"
     val scratchDir ="hdfs://Esni-Master:8020/tmp/hive"
@@ -20,7 +23,7 @@ object HiveExecuteEngine {
       .addAppArgs(hiveMetastoreUri, scratchDir, "show databases")
       .startApplication(new SparkAppHandle.Listener {
         override def stateChanged(handle: SparkAppHandle): Unit = {
-          println("============================" + handle.getState.toString + "==============================")
+          logger.info("============================" + handle.getState.toString + "==============================")
         }
 
         override def infoChanged(handle: SparkAppHandle): Unit = {
