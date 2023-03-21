@@ -2,6 +2,8 @@ package org.esni.tddata.ops.hive.engine
 
 import org.apache.spark.launcher.{SparkAppHandle, SparkLauncher}
 
+import java.util.concurrent.CountDownLatch
+
 object HiveExecuteEngine {
 
   def main(args: Array[String]): Unit = {
@@ -9,7 +11,9 @@ object HiveExecuteEngine {
     val hiveMetastoreUri ="thrift://Esni-Master:9083"
     val scratchDir ="hdfs://Esni-Master:8020/tmp/hive"
 
-    val launcher = new SparkLauncher()
+    val cd = new CountDownLatch(1)
+
+    new SparkLauncher()
       .setAppResource("hdfs://1.15.135.178:8020/tddata_ops/jars/tddata-ops-hive-engine-0.0.1-jar-with-dependencies.jar")
       .setMainClass("org.esni.tddata.ops.hive.engine.task.HiveTaskActuator")
       .setMaster("yarn")
@@ -23,6 +27,8 @@ object HiveExecuteEngine {
 
         }
       })
+
+    cd.await()
 
 //    while (true) {
 //      println(launcher.getState.toString)
