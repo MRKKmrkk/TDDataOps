@@ -20,7 +20,7 @@ object HiveExecuteEngine {
       .addAppArgs(hiveMetastoreUri, scratchDir, "show databases")
       .startApplication(new SparkAppHandle.Listener {
         override def stateChanged(handle: SparkAppHandle): Unit = {
-          println(handle.getState.toString)
+          println("============================" + handle.getState.toString + "==============================")
         }
 
         override def infoChanged(handle: SparkAppHandle): Unit = {
