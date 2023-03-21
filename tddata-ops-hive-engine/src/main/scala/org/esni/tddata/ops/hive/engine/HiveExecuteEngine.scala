@@ -9,10 +9,9 @@ object HiveExecuteEngine {
 
   def main(args: Array[String]): Unit = {
 
-    val logger = LoggerFactory.getLogger(HiveExecuteEngine.getClass)
-
     val hiveMetastoreUri ="thrift://Esni-Master:9083"
     val scratchDir ="hdfs://Esni-Master:8020/tmp/hive"
+    val logger = LoggerFactory.getLogger(HiveExecuteEngine.getClass)
 
     val cd = new CountDownLatch(1)
 
