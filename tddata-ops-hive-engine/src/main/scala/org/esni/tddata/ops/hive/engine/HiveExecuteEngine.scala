@@ -20,6 +20,7 @@ object HiveExecuteEngine {
       .setMainClass("org.esni.tddata.ops.hive.engine.task.HiveTaskActuator")
       .setMaster("yarn")
       .addAppArgs(hiveMetastoreUri, scratchDir, "show databases")
+      .setDeployMode("client")
       .startApplication(new SparkAppHandle.Listener {
         override def stateChanged(handle: SparkAppHandle): Unit = {
           logger.info("============================" + handle.getState.toString + "==============================")
@@ -29,7 +30,6 @@ object HiveExecuteEngine {
 
         }
       })
-
     cd.await()
 
 //    while (true) {
